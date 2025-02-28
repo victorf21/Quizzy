@@ -4,7 +4,7 @@ def get_connection():
     try:
         dbname = "trivia_db"
         user = "postgres"
-        password = "root"
+        password = "pirineus"
         host = "localhost"
         port = "5432"
         
@@ -20,4 +20,6 @@ def get_connection():
 
     except Exception as e:
         print(f"Error de connexió a la base de dades: {e}")
-        return None  # Retornar None si hi ha un error
+        return None  # Retornar None si hi ha un error 
+
+get_connection()
