@@ -21,5 +21,3 @@ def get_connection():
     except Exception as e:
         print(f"Error de connexió a la base de dades: {e}")
         return None  # Retornar None si hi ha un error
-    
-get_connection()
