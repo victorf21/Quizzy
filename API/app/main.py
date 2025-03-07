@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routers import usuario
-# python -m uvicorn app.main:app --reload
+# python -m uvicorn main:app --reload  
 app = FastAPI()
 
 # Configurar CORS
