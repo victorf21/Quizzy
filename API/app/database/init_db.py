@@ -1,4 +1,4 @@
-from app.database.config import engine
+from database.config import engine
 from .models import SQLModel
 
 def create_db_and_tables():

@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import usuario
+from routers import usuario
 # python -m uvicorn app.main:app --reload
 app = FastAPI()
 
