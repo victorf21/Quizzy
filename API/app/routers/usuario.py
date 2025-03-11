@@ -1,12 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException
-from typing import List
-from pydantic import BaseModel
-from sqlmodel import select
+from fastapi import APIRouter, Depends, Query, HTTPException
 from database.session import get_session
-from database import conn
 from database.models import Usuario
 from sqlalchemy.orm import Session
-
+from sqlmodel import select
 
 router = APIRouter(prefix="/usuarios", tags=["Usuarios"])
 
@@ -16,3 +12,12 @@ def crear_usuario(usuario: Usuario, session: Session = Depends(get_session)):
     session.commit()
     session.refresh(usuario)
     return usuario
+
+@router.get("/")
+def leer_usuarios(
+    session: Session = Depends(get_session),
+    offset: int = 0,
+    limit: int = Query(100, le=100),
+) -> list[Usuario]:
+    usuarios = session.exec(select(Usuario).offset(offset).limit(limit)).all()
+    return usuarios
