@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 from sqlmodel import select
 from database.session import get_session
-from API.app.models.models import Pregunta
+from models.pregunta import Pregunta
 from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/preguntas", tags=["Preguntas"])

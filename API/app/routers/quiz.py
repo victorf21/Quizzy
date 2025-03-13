@@ -3,8 +3,7 @@ from typing import List
 from pydantic import BaseModel
 from sqlmodel import select
 from database.session import get_session
-from database import conn
-from ..models.quiz import Quiz
+from models.quiz import Quiz
 from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/quizes", tags=["Quizes"])
