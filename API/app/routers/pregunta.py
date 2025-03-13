@@ -1,33 +1,34 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException 
 from typing import List
-from sqlmodel import select
+from sqlmodel import select, Session
 from database.session import get_session
 from models.pregunta import Pregunta
-from sqlalchemy.orm import Session
+from schemas.pregunta import PreguntaCreate, PreguntaRead
 
 router = APIRouter(prefix="/preguntas", tags=["Preguntas"])
 
-@router.post("/", response_model=Pregunta)
-def crear_pregunta(pregunta: Pregunta, session: Session = Depends(get_session)):
-    session.add(pregunta)
+@router.post("/", response_model=PreguntaRead)
+def crear_pregunta(pregunta: PreguntaCreate, session: Session = Depends(get_session)):
+    nueva_pregunta = Pregunta(**pregunta.dict())
+    session.add(nueva_pregunta)
     session.commit()
-    session.refresh(pregunta)
-    return pregunta
+    session.refresh(nueva_pregunta)
+    return nueva_pregunta
 
-@router.get("/", response_model=List[Pregunta])
+@router.get("/", response_model=List[PreguntaRead])
 def leer_preguntas(session: Session = Depends(get_session)):
     preguntas = session.exec(select(Pregunta)).all()
     return preguntas
 
-@router.get("/{pregunta_id}", response_model=Pregunta)
+@router.get("/{pregunta_id}", response_model=PreguntaRead)
 def leer_pregunta(pregunta_id: int, session: Session = Depends(get_session)):
     pregunta = session.get(Pregunta, pregunta_id)
     if pregunta is None:
         raise HTTPException(status_code=404, detail="Pregunta no encontrada")
     return pregunta
 
-@router.put("/{pregunta_id}", response_model=Pregunta)
-def actualizar_pregunta(pregunta_id: int, pregunta: Pregunta, session: Session = Depends(get_session)):
+@router.put("/{pregunta_id}", response_model=PreguntaRead)
+def actualizar_pregunta(pregunta_id: int, pregunta: PreguntaCreate, session: Session = Depends(get_session)):
     db_pregunta = session.get(Pregunta, pregunta_id)
     if db_pregunta is None:
         raise HTTPException(status_code=404, detail="Pregunta no encontrada")
@@ -37,7 +38,7 @@ def actualizar_pregunta(pregunta_id: int, pregunta: Pregunta, session: Session =
     session.refresh(db_pregunta)
     return db_pregunta
 
-@router.delete("/{pregunta_id}", response_model=Pregunta)
+@router.delete("/{pregunta_id}", response_model=PreguntaRead)
 def eliminar_pregunta(pregunta_id: int, session: Session = Depends(get_session)):
     pregunta = session.get(Pregunta, pregunta_id)
     if pregunta is None:
