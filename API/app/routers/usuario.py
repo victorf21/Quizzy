@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, Query, HTTPException
 from database.session import get_session
-from database.models import Usuario
+from ..models.usuario import Usuario
 from sqlalchemy.orm import Session
 from sqlmodel import select
 from schemas.usuario import UsuarioCreate, UsuarioRead
