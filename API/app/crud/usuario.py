@@ -1,8 +1,12 @@
+import os
 from sqlmodel import select
 from sqlalchemy.orm import Session
-from fastapi import HTTPException
+from fastapi import HTTPException, UploadFile
 from models.usuario import Usuario
 from schemas.usuario import UsuarioCreate, UsuarioUpdate
+
+UPLOAD_FOLDER = "uploads"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 def get_usuario(session: Session, usuario_id: int):
     usuario = session.get(Usuario, usuario_id)
@@ -39,3 +43,23 @@ def delete_usuario(session: Session, usuario_id: int):
     session.delete(usuario)
     session.commit()
     return {"detail": "Usuario eliminado"}
+
+def upload_avatar(session: Session, usuario_id: int, file: UploadFile):
+    usuario = get_usuario(session, usuario_id)
+
+    # Guardar la imagen con un nombre único
+    file_extension = file.filename.split(".")[-1]
+    filename = f"user_{usuario_id}.{file_extension}"
+    file_path = os.path.join(UPLOAD_FOLDER, filename)
+
+    # Guardar el archivo en la carpeta
+    with open(file_path, "wb") as buffer:
+        buffer.write(file.file.read())
+
+    # Actualizar la DB con la nueva ruta
+    usuario.avatar = file_path
+    session.add(usuario)
+    session.commit()
+    session.refresh(usuario)
+
+    return {"message": "Avatar subido exitosamente", "avatar_url": file_path}
