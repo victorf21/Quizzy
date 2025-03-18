@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, UploadFile, File
 from database.session import get_session
 from sqlalchemy.orm import Session
 from schemas.usuario import UsuarioCreate, UsuarioRead, UsuarioUpdate
 from crud.usuario import *
+from fastapi.responses import FileResponse
 
 router = APIRouter(prefix="/usuarios", tags=["Usuarios"])
 
@@ -25,3 +26,16 @@ def actualizar_usuario(usuario_id: int, usuario_update: UsuarioUpdate, session: 
 @router.delete("/{usuario_id}")
 def eliminar_usuario(usuario_id: int, session: Session = Depends(get_session)):
     return delete_usuario(session, usuario_id)
+
+@router.post("/{usuario_id}/avatar")
+def subir_avatar(usuario_id: int, file: UploadFile = File(...), session: Session = Depends(get_session)):
+    return upload_avatar(session, usuario_id, file)
+
+@router.get("/{usuario_id}/avatar")
+def obtener_avatar(usuario_id: int, session: Session = Depends(get_session)):
+    usuario = get_usuario(session, usuario_id)
+    
+    if not usuario.avatar:
+        raise HTTPException(status_code=404, detail="El usuario no tiene avatar")
+
+    return FileResponse(usuario.avatar)
