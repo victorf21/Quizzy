@@ -5,7 +5,7 @@ from models.historial import Historial
 from models.quiz import Quiz
 from models.pregunta import Pregunta
 from models.respuesta import Respuesta
-
+# python -m database.init_db (desde carpeta app)
 def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
 
