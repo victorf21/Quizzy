@@ -4,9 +4,7 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException, UploadFile
 from models.usuario import Usuario
 from schemas.usuario import UsuarioCreate, UsuarioUpdate
-
-UPLOAD_FOLDER = "uploads"
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+from database.config import UPLOAD_FOLDER_USERS
 
 def get_usuario(session: Session, usuario_id: int):
     usuario = session.get(Usuario, usuario_id)
@@ -50,7 +48,7 @@ def upload_avatar(session: Session, usuario_id: int, file: UploadFile):
     # Guardar la imagen con un nombre único
     file_extension = file.filename.split(".")[-1]
     filename = f"user_{usuario_id}.{file_extension}"
-    file_path = os.path.join(UPLOAD_FOLDER, filename)
+    file_path = os.path.join(UPLOAD_FOLDER_USERS, filename)
 
     # Guardar el archivo en la carpeta
     with open(file_path, "wb") as buffer:
