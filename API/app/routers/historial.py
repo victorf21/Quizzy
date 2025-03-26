@@ -3,7 +3,7 @@ from typing import List
 from sqlmodel import Session
 from database.session import get_session
 from schemas.historial import HistorialCreate, HistorialRead
-from crud.historial import crear_historial_service, leer_historiales_service, leer_historial_service, eliminar_historial_service
+from crud.historial import *
 
 router = APIRouter(prefix="/historial", tags=["Historial"])
 
@@ -22,3 +22,7 @@ def leer_historial(historial_id: int, session: Session = Depends(get_session)):
 @router.delete("/{historial_id}", response_model=HistorialRead)
 def eliminar_historial(historial_id: int, session: Session = Depends(get_session)):
     return eliminar_historial_service(historial_id, session)
+
+@router.put("/{historial_id}", response_model=HistorialRead)
+def actualizar_historial(historial_id: int, historial: HistorialCreate, session: Session = Depends(get_session)):
+    return actualizar_historial(historial_id, historial, session)
