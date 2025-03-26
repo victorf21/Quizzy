@@ -27,3 +27,7 @@ def actualizar_quiz(quiz_id: int, quiz: QuizCreate, session: Session = Depends(g
 @router.delete("/{quiz_id}", response_model=QuizRead)
 def eliminar_quiz(quiz_id: int, session: Session = Depends(get_session)):
     return eliminar_quiz_service(quiz_id, session)
+
+@router.post("/{quiz_id}/imagen")
+def subir_imagen_quiz(quiz_id: int, file: UploadFile, session: Session = Depends(get_session)):
+    return upload_quiz_image(session, quiz_id, file)
