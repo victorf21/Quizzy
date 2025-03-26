@@ -1,10 +1,12 @@
 from sqlmodel import Session, select
-from fastapi import HTTPException
+from fastapi import HTTPException, UploadFile
 from models.quiz import Quiz
 from schemas.quiz import QuizCreate
+from database.config import UPLOAD_FOLDER_QUIZZES
+import os
 
 def crear_quiz_service(quiz: QuizCreate, session: Session):
-    nuevo_quiz = Quiz(**quiz.dict())
+    nuevo_quiz = Quiz(**quiz.model_dump())
     session.add(nuevo_quiz)
     session.commit()
     session.refresh(nuevo_quiz)
@@ -36,3 +38,23 @@ def eliminar_quiz_service(quiz_id: int, session: Session):
     session.delete(quiz)
     session.commit()
     return quiz
+
+def upload_quiz_image(session: Session, quiz_id: int, file: UploadFile):
+    quiz = session.get(Quiz, quiz_id)
+    if not quiz:
+        raise HTTPException(status_code=404, detail="Quiz no encontrado")
+
+    # Guardar la imagen con un nombre único
+    file_extension = file.filename.split(".")[-1]
+    filename = f"quiz_{quiz_id}.{file_extension}"
+    file_path = os.path.join(UPLOAD_FOLDER_QUIZZES, filename)
+
+    with open(file_path, "wb") as buffer:
+        buffer.write(file.file.read())
+
+    quiz.imagen = file_path
+    session.add(quiz)
+    session.commit()
+    session.refresh(quiz)
+
+    return {"message": "Imagen de quiz subida exitosamente", "image_url": file_path}
