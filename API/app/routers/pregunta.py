@@ -27,3 +27,7 @@ def actualizar_pregunta(pregunta_id: int, pregunta: PreguntaCreate, session: Ses
 @router.delete("/{pregunta_id}", response_model=PreguntaRead)
 def eliminar_pregunta(pregunta_id: int, session: Session = Depends(get_session)):
     return eliminar_pregunta_service(pregunta_id, session)
+
+@router.post("/{pregunta_id}/imagen")
+def subir_imagen_pregunta(pregunta_id: int, file: UploadFile, session: Session = Depends(get_session)):
+    return upload_pregunta_image(session, pregunta_id, file)
