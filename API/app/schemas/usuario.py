@@ -1,5 +1,6 @@
 from sqlmodel import SQLModel, Field
 from typing import Optional
+from pydantic import BaseModel
 
 class UsuarioBase(SQLModel):
     mail: str = Field(unique=True, nullable=False)
@@ -11,7 +12,7 @@ class UsuarioBase(SQLModel):
     pts_x_quiz: int = Field(default=0)
 
 class UsuarioCreate(UsuarioBase):
-    pass
+    password: str 
 
 class UsuarioRead(UsuarioBase):
     id: int
@@ -24,3 +25,7 @@ class UsuarioUpdate(SQLModel):
     categoria: Optional[str] = None
     avatar: Optional[str] = None
     pts_x_quiz: Optional[int] = None
+
+class UsuarioLogin(BaseModel):
+    mail: str
+    password: str  

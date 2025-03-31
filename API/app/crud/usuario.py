@@ -3,8 +3,11 @@ from sqlmodel import select
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, UploadFile
 from models.usuario import Usuario
-from schemas.usuario import UsuarioCreate, UsuarioUpdate
+from schemas.usuario import UsuarioCreate, UsuarioUpdate, UsuarioLogin
 from database.config import UPLOAD_FOLDER_USERS
+from passlib.context import CryptContext
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def get_usuario(session: Session, usuario_id: int):
     usuario = session.get(Usuario, usuario_id)
@@ -20,11 +23,20 @@ def create_usuario(session: Session, usuario_data: UsuarioCreate):
     if usuario_existente:
         raise HTTPException(status_code=400, detail="El correo ya está en uso")
 
-    nuevo_usuario = Usuario(**usuario_data.model_dump())
+    hashed_password = pwd_context.hash(usuario_data.password)
+    nuevo_usuario = Usuario(**usuario_data.model_dump(exclude={"password"}), password=hashed_password)
+
     session.add(nuevo_usuario)
     session.commit()
     session.refresh(nuevo_usuario)
     return nuevo_usuario
+
+def login_usuario(session: Session, usuario_data: UsuarioLogin):
+    usuario = session.exec(select(Usuario).where(Usuario.mail == usuario_data.mail)).first()
+    if not usuario or not pwd_context.verify(usuario_data.password, usuario.password):
+        raise HTTPException(status_code=401, detail="Credenciales incorrectas")
+
+    return {"message": "Login exitoso", "usuario_id": usuario.id}
 
 def update_usuario(session: Session, usuario_id: int, usuario_data: UsuarioUpdate):
     usuario = get_usuario(session, usuario_id)
