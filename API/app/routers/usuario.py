@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Query, UploadFile, File
 from database.session import get_session
 from sqlalchemy.orm import Session
-from schemas.usuario import UsuarioCreate, UsuarioRead, UsuarioUpdate
+from schemas.usuario import UsuarioCreate, UsuarioRead, UsuarioUpdate, UsuarioLogin
 from crud.usuario import *
 from fastapi.responses import FileResponse
 
@@ -10,6 +10,10 @@ router = APIRouter(prefix="/usuarios", tags=["Usuarios"])
 @router.post("/", response_model=UsuarioRead)
 def crear_usuario(usuario: UsuarioCreate, session: Session = Depends(get_session)):
     return create_usuario(session, usuario)
+
+@router.post("/login")
+def login(usuario: UsuarioLogin, session: Session = Depends(get_session)):
+    return login_usuario(session, usuario)
 
 @router.get("/", response_model=list[UsuarioRead])
 def leer_usuarios(session: Session = Depends(get_session), offset: int = 0, limit: int = Query(100, le=100)):
