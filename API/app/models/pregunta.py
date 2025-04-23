@@ -7,3 +7,4 @@ class Pregunta(SQLModel, table=True):
     id_quiz: Optional[int] = Field(default=None, foreign_key="quiz.id")
     descripcion: str = Field(nullable=False)
     imagen: Optional[str] = None
+    tiempo: Optional[int] = Field(default=None)
