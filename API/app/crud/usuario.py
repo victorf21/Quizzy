@@ -32,28 +32,20 @@ def create_usuario(session: Session, usuario_data: UsuarioCreate):
     return nuevo_usuario
 
 def login_usuario(session: Session, usuario_data: UsuarioLogin):
+    # Buscar usuario por email
     usuario = session.exec(
         select(Usuario).where(Usuario.mail == usuario_data.mail)
     ).first()
-    
+
     if not usuario:
-        raise HTTPException(
-            status_code=401,
-            detail="Correo electrónico no registrado"
-        )
-    
+        raise HTTPException(status_code=401, detail="Correo electrónico no registrado")
+
+    # Verificar la contraseña
     if not pwd_context.verify(usuario_data.password, usuario.password):
-        raise HTTPException(
-            status_code=401,
-            detail="Contraseña incorrecta"
-        )
-    
-    return {
-        "message": "Login exitoso",
-        "usuario_id": usuario.id,
-        "nombre": usuario.nombre,
-        "mail": usuario.mail
-    }
+        raise HTTPException(status_code=401, detail="Contraseña incorrecta")
+
+    # Devolver el usuario completo
+    return usuario
 
 def update_usuario(session: Session, usuario_id: int, usuario_data: UsuarioUpdate):
     usuario = get_usuario(session, usuario_id)
