@@ -16,6 +16,8 @@ class UsuarioCreate(UsuarioBase):
 
 class UsuarioRead(UsuarioBase):
     id: int
+    class Config:
+        from_attributes = True
 
 class UsuarioUpdate(SQLModel):
     mail: Optional[str] = None
@@ -29,3 +31,8 @@ class UsuarioUpdate(SQLModel):
 class UsuarioLogin(BaseModel):
     mail: str
     password: str  
+
+class LoginResponse(SQLModel):
+    success: bool
+    message: str
+    usuario: UsuarioRead
