@@ -12,3 +12,4 @@ class Quiz(SQLModel, table=True):
         sa_column=sa.Column(sa.TIMESTAMP, server_default=sa.text("CURRENT_TIMESTAMP"))
     )
     puntuacion: Optional[int] = None
+    imagen: Optional[str] = None

@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import usuario, quiz, pregunta, historial
+from routers import usuario, quiz, pregunta, historial, respuesta
 # python -m uvicorn main:app --reload  
 app = FastAPI()
 
@@ -17,3 +17,4 @@ app.include_router(usuario.router)
 app.include_router(quiz.router)
 app.include_router(pregunta.router)
 app.include_router(historial.router)
+app.include_router(respuesta.router)
