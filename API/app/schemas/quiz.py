@@ -1,6 +1,6 @@
 from sqlmodel import SQLModel
 from typing import Optional
-import datetime
+from datetime import datetime
 
 class QuizCreate(SQLModel):
     nombre: str
@@ -12,7 +12,7 @@ class QuizCreate(SQLModel):
 
 class QuizRead(QuizCreate):
     id: int
-    fecha_creacion: datetime.datetime
+    fecha_creacion: datetime
 
 class QuizUpdate(SQLModel):
     nombre: Optional[str] = None
