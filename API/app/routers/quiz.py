@@ -20,6 +20,10 @@ def leer_quizzes(session: Session = Depends(get_session)):
 def leer_quiz(quiz_id: int, session: Session = Depends(get_session)):
     return leer_quiz_service(quiz_id, session)
 
+@router.get("/quiz/{usuario_id}", response_model=List[QuizRead])
+def leer_quizzes_por_usuario(usuario_id: int, session: Session = Depends(get_session)):
+    return session.exec(select(Quiz).where(Quiz.id_usuario == usuario_id)).all()
+
 @router.put("/{quiz_id}", response_model=QuizRead)
 def actualizar_quiz(quiz_id: int, quiz: QuizCreate, session: Session = Depends(get_session)):
     return actualizar_quiz_service(quiz_id, quiz, session)
