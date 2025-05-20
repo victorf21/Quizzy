@@ -10,3 +10,5 @@ class PreguntaCreate(PreguntaBase):
 
 class PreguntaRead(PreguntaBase):
     id: int
+    imagen: Optional[str] = None
+    tiempo: Optional[int] = None

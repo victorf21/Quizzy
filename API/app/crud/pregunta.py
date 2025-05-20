@@ -21,6 +21,13 @@ def leer_pregunta_service(pregunta_id: int, session: Session):
         raise HTTPException(status_code=404, detail="Pregunta no encontrada")
     return pregunta
 
+def leer_preguntas_por_quiz_service(quiz_id: int, session: Session):
+    statement = select(Pregunta).where(Pregunta.id_quiz == quiz_id)
+    preguntas = session.exec(statement).all()
+    if not preguntas:
+        raise HTTPException(status_code=404, detail="No hay preguntas para este quiz")
+    return preguntas
+
 def actualizar_pregunta_service(pregunta_id: int, pregunta: PreguntaCreate, session: Session):
     db_pregunta = session.get(Pregunta, pregunta_id)
     if db_pregunta is None:

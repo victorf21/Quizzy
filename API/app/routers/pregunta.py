@@ -16,6 +16,10 @@ def crear_pregunta(pregunta: PreguntaCreate, session: Session = Depends(get_sess
 def leer_preguntas(session: Session = Depends(get_session)):
     return leer_preguntas_service(session)
 
+@router.get("/por_quiz/{quiz_id}", response_model=List[PreguntaRead])
+def leer_preguntas_por_quiz(quiz_id: int, session: Session = Depends(get_session)):
+    return leer_preguntas_por_quiz_service(quiz_id, session)
+
 @router.get("/{pregunta_id}", response_model=PreguntaRead)
 def leer_pregunta(pregunta_id: int, session: Session = Depends(get_session)):
     return leer_pregunta_service(pregunta_id, session)

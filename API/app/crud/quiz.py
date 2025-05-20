@@ -21,6 +21,11 @@ def leer_quiz_service(quiz_id: int, session: Session):
         raise HTTPException(status_code=404, detail="Quiz no encontrado")
     return quiz
 
+def leer_quizzes_por_usuario(usuario_id: int, session: Session):
+    statement = select(Quiz).where(Quiz.id_usuario == usuario_id)
+    results = session.exec(statement)
+    return results.all()
+
 def actualizar_quiz_service(quiz_id: int, quiz: QuizCreate, session: Session):
     db_quiz = session.get(Quiz, quiz_id)
     if db_quiz is None:
